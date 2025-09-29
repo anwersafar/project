@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مبادرة تطوير قطاع الطفولة المبكرة</title>
+
+    <!-- LIBRARIES -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" xintegrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display.swap" rel="stylesheet">
+
+    <!-- STYLES -->
+    <style>
+        :root {
+            --moe-dark-blue: #15445A;
+            --moe-green: #07A869;
+            --moe-blue: #3D7EB9;
+            --moe-teal: #0DA9A6;
+            --moe-gold: #C1B48A;
+            --moe-gray: #C2C1C1;
+        }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            background-color: #f0f4f8;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            color: var(--moe-dark-blue);
+        }
+
+        .page {
+            display: none;
+            width: 100%;
+            height: 100%;
+            animation: fadeIn 0.7s ease-in-out;
+        }
+        .page.active {
+            display: flex;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .shadow-custom { box-shadow: 0 25px 50px -12px rgba(21, 68, 90, 0.2); }
+
+        .nav-arrow, .home-btn {
+            background-color: var(--moe-dark-blue);
+            color: #fff;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px solid #fff;
+        }
+        .nav-arrow:hover, .home-btn:hover {
+            background-color: var(--moe-green);
+            transform: scale(1.1);
+        }
+        .nav-arrow.disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: scale(1);
+            background-color: #94a3b8;
+        }
+
+        .index-button {
+            transition: all 0.3s ease;
+            background-color: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+        }
+        .index-button:hover {
+            background-color: rgba(255,255,255,0.15);
+            transform: translateY(-5px);
+            border-color: var(--moe-green);
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            height: 420px;
+            margin: auto;
+        }
+        .content-panel::-webkit-scrollbar { width: 5px; }
+        .content-panel::-webkit-scrollbar-track { background: #e2e8f0; }
+        .content-panel::-webkit-scrollbar-thumb { background: var(--moe-gray); border-radius: 10px; }
+        .content-panel::-webkit-scrollbar-thumb:hover { background: var(--moe-gold); }
+
+    </style>
+</head>
+<body>
+
+    <main id="app-container" class="h-full w-full relative">
+
+        <!-- ===== INDEX PAGE ===== -->
+        <div id="index-page" class="page active flex-col items-center justify-center p-8 bg-[var(--moe-dark-blue)]">
+            <div class="text-center mb-10 flex items-center justify-center gap-6">
+                <img src="https://github.com/anwersafar/project/blob/master/MoeWhite.png?raw=true" alt="شعار وزارة التعليم" style="height: 81px; width: 107px;">
+                <div>
+                    <h1 class="text-4xl md:text-5xl font-extrabold text-white">مبادرة تطوير قطاع الطفولة المبكرة</h1>
+                    <p class="text-lg text-slate-300 mt-3">عرض تفاعلي للمبادرة وأهدافها وخططها</p>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <button onclick="goToPage(1)" class="index-button p-5 rounded-xl text-white text-right flex items-center gap-4"><i class="fa-solid fa-id-card-clip text-[var(--moe-green)] text-3xl"></i><div><h2 class="text-lg font-bold">بطاقة المبادرة</h2></div></button>
+                <button onclick="goToPage(2)" class="index-button p-5 rounded-xl text-white text-right flex items-center gap-4"><i class="fa-solid fa-bullseye text-[var(--moe-green)] text-3xl"></i><div><h2 class="text-lg font-bold">المبررات والأهداف</h2></div></button>
+                <button onclick="goToPage(3)" class="index-button p-5 rounded-xl text-white text-right flex items-center gap-4"><i class="fa-solid fa-chart-line text-[var(--moe-green)] text-3xl"></i><div><h2 class="text-lg font-bold">مؤشرات الأداء</h2></div></button>
+                <button onclick="goToPage(4)" class="index-button p-5 rounded-xl text-white text-right flex items-center gap-4"><i class="fa-solid fa-clipboard-list text-[var(--moe-green)] text-3xl"></i><div><h2 class="text-lg font-bold">خطة العمل</h2></div></button>
+                <button onclick="goToPage(5)" class="index-button p-5 rounded-xl text-white text-right flex items-center gap-4"><i class="fa-solid fa-handshake-angle text-[var(--moe-green)] text-3xl"></i><div><h2 class="text-lg font-bold">الشركاء والفرص</h2></div></button>
+                <button onclick="goToPage(6)" class="index-button p-5 rounded-xl text-white text-right flex items-center gap-4"><i class="fa-solid fa-triangle-exclamation text-[var(--moe-green)] text-3xl"></i><div><h2 class="text-lg font-bold">إدارة المخاطر</h2></div></button>
+                <button onclick="goToPage(7)" class="index-button p-5 rounded-xl text-white text-right flex items-center gap-4"><i class="fa-solid fa-coins text-[var(--moe-green)] text-3xl"></i><div><h2 class="text-lg font-bold">الميزانية</h2></div></button>
+            </div>
+        </div>
+
+        <!-- ===== CONTENT PAGES WRAPPER ===== -->
+        <div id="content-wrapper" class="page items-center justify-center p-4 sm:p-8">
+            <div class="bg-white rounded-2xl shadow-custom w-full max-w-7xl h-[90vh] flex flex-col md:flex-row overflow-hidden">
+                <div id="pages-container" class="flex-1 h-full relative">
+                    <!-- PAGE 1: Initiative Card -->
+                    <div data-page-index="1" class="page absolute inset-0 flex-col md:flex-row"><div class="w-full md:w-2/3 p-6 md:p-8 flex flex-col justify-center overflow-y-auto content-panel relative"><img src="https://github.com/anwersafar/project/blob/master/Moecolored.png?raw=true" alt="شعار وزارة التعليم" class="absolute top-6 left-6 z-10" style="height: 81px; width: 107px;"><div class="grid grid-cols-1 lg:grid-cols-2 gap-4 text-sm w-full"><div class="bg-slate-50 p-4 rounded-lg border-r-4 border-[var(--moe-gold)]"><p class="font-semibold text-gray-500">عنوان المبادرة</p><p class="font-bold text-[var(--moe-green)]">تفعيل الفصول التعليمية بمراكز ضيافة الأطفال في الطفولة المبكرة</p></div><div class="bg-slate-50 p-4 rounded-lg"><p class="font-semibold text-gray-500">الإدارة</p><p class="font-bold">الشؤون التعليمية</p></div><div class="bg-slate-50 p-4 rounded-lg"><p class="font-semibold text-gray-500">تاريخ رفع المبادرة</p><p class="font-bold">4 سبتمبر 2025</p></div><div class="bg-slate-50 p-4 rounded-lg"><p class="font-semibold text-gray-500">مقدم المبادرة</p><p class="font-bold">أ.أنور بن سفر الحجيلي - مرشح برنامج القياديين الواعدين في القطاع العام</p></div><div class="bg-slate-50 p-4 rounded-lg col-span-1 lg:col-span-2"><p class="font-semibold text-gray-500">الغاية من المبادرة</p><p class="font-bold">تنظيم وتطوير الخدمات التعليمية في مراكز ضيافة الأطفال لتعزيز جودة التعليم في الطفولة المبكرة وسد الفجوات التنظيمية والتشغيلية في القطاع.</p></div></div></div><div class="w-full md:w-1/3 bg-gradient-to-b from-[var(--moe-green)] to-[var(--moe-teal)] p-8 flex flex-col justify-center items-center text-center text-white flex-shrink-0"><i class="fa-solid fa-id-card-clip text-6xl mb-4"></i><h2 class="text-3xl font-bold">بطاقة المبادرة</h2></div></div>
+                    <!-- PAGE 2: Justification -->
+                    <div data-page-index="2" class="page absolute inset-0 flex-col md:flex-row"><div class="w-full md:w-2/3 p-6 md:p-8 flex flex-col justify-center overflow-y-auto content-panel relative"><img src="https://github.com/anwersafar/project/blob/master/Moecolored.png?raw=true" alt="شعار وزارة التعليم" class="absolute top-6 left-6 z-10" style="height: 81px; width: 107px;"><div class="pt-24"><div class="space-y-6 w-full max-w-4xl mx-auto"><div><h3 class="text-xl font-bold text-[var(--moe-blue)] mb-2">وصف الفكرة وأهميتها</h3><p class="text-gray-700 leading-relaxed">تهدف المبادرة إلى تفعيل فصول تعليمية معتمدة داخل مراكز ضيافة الأطفال القائمة، وتحويلها من مجرد أماكن للرعاية إلى بيئات تعليمية تربوية متكاملة. تأتي أهمية المبادرة من كونها تعالج تحديات تنظيمية قائمة، وتساهم في التوسع في خدمات الطفولة المبكرة، وتخفيف الضغط على رياض الأطفال الحكومية والخاصة، مما يخدم شريحة أوسع من المجتمع ويعزز من جودة المخرجات التعليمية في هذه المرحلة العمرية الحرجة.</p></div><div><h3 class="text-xl font-bold text-[var(--moe-blue)] mb-2">جوانب الإبداع والابتكار</h3><ul class="list-disc pr-6 space-y-2 text-gray-700"><li>إنشاء نموذج تشغيلي هجين يدمج بين الرعاية والتعليم بمعايير واضحة.</li><li>تطبيق المبادرة على مراحل تبدأ بعينة تجريبية لقياس الأثر وتطوير النموذج.</li><li>تطوير آلية اعتماد ومنح شهادات موحدة بالتعاون مع جهات الاختصاص.</li><li>استثمار البنية التحتية القائمة لمراكز الضيافة لتحقيق توسع سريع وبتكلفة أقل.</li></ul></div><div><h3 class="text-xl font-bold text-[var(--moe-blue)] mb-2">الأهداف</h3><div class="space-y-4"><div class="p-4 border-r-4 border-emerald-500 bg-emerald-50 rounded-lg"><h4 class="font-bold">الهدف الاستراتيجي لوزارة التعليم</h4><p>تحسين جودة التعليم وتوسيع فرص الالتحاق بالتعليم في مرحلة الطفولة المبكرة.</p></div><div class="p-4 border-r-4 border-sky-500 bg-sky-50 rounded-lg"><h4 class="font-bold">الهدف العام للمبادرة</h4><p>تمكين مراكز ضيافة الأطفال من تقديم خدمات تعليمية معتمدة وذات جودة عالية للأطفال في مرحلة ما قبل المدرسة.</p></div><div class="p-4 border-r-4 border-amber-500 bg-amber-50 rounded-lg"><h4 class="font-bold">الأهداف التفصيلية</h4><ul class="list-disc pr-5 mt-2 space-y-1"><li>تطوير إطار تنظيمي وتشغيلي للفصول التعليمية في 10 مراكز ضيافة (كمرحلة أولى).</li><li>تأهيل وتدريب 30 من الكوادر التعليمية العاملة في المراكز المستهدفة.</li><li>رفع وعي 100 من أولياء الأمور بالمعايير التعليمية الجديدة في المراكز.</li><li>تحقيق نسبة رضا لا تقل عن 90% لدى المستفيدين من الخدمات التعليمية المطورة.</li></ul></div></div></div></div></div></div><div class="w-full md:w-1/3 bg-gradient-to-b from-[var(--moe-green)] to-[var(--moe-teal)] p-8 flex flex-col justify-center items-center text-center text-white flex-shrink-0"><i class="fa-solid fa-bullseye text-6xl mb-4"></i><h2 class="text-3xl font-bold">المبررات والأهداف</h2></div></div>
+                    <!-- PAGE 3: KPIs -->
+                    <div data-page-index="3" class="page absolute inset-0 flex-col md:flex-row"><div class="w-full md:w-2/3 p-6 md:p-8 flex flex-col justify-center relative"><img src="https://github.com/anwersafar/project/blob/master/Moecolored.png?raw=true" alt="شعار وزارة التعليم" class="absolute top-6 left-6 z-10" style="height: 81px; width: 107px;"><div class="space-y-4"><h2 class="text-2xl font-bold">مؤشرات الأداء الرئيسية (KPIs)</h2><p class="text-gray-600">هذا القسم يوضح كيفية قياس نجاح الأهداف التفصيلية للمبادرة بشكل دقيق ومرحلي خلال الفصلين الدراسيين الأول والثاني.</p><div class="w-full overflow-y-auto content-panel"><table class="w-full text-sm text-right min-w-[600px]"><thead class="bg-slate-100"><tr class="text-right"><th class="p-3">الهدف التفصيلي</th><th class="p-3">مؤشر الأداء</th><th class="p-3">خط الأساس</th><th class="p-3">مستهدف ف1</th><th class="p-3">مستهدف ف2</th></tr></thead><tbody><tr class="border-b"><td class="p-3 font-medium">تطوير إطار تنظيمي وتشغيلي</td><td class="p-3">نسبة إنجاز تطوير الإطار</td><td class="p-3">0%</td><td class="p-3">100%</td><td class="p-3">100% (مطبق)</td></tr><tr class="border-b bg-slate-50"><td class="p-3 font-medium">تأهيل وتدريب الكوادر</td><td class="p-3">عدد الكوادر الذين أتموا البرنامج</td><td class="p-3">0</td><td class="p-3">15 كادر</td><td class="p-3">30 كادر</td></tr><tr class="border-b"><td class="p-3 font-medium">رفع وعي أولياء الأمور</td><td class="p-3">عدد أولياء الأمور المشاركين</td><td class="p-3">0</td><td class="p-3">50 ولي أمر</td><td class="p-3">100 ولي أمر</td></tr><tr class="bg-slate-50"><td class="p-3 font-medium">تحقيق رضا المستفيدين</td><td class="p-3">نسبة رضا أولياء الأمور</td><td class="p-3">غير محدد</td><td class="p-3">85%</td><td class="p-3">90%</td></tr></tbody></table></div></div></div><div class="w-full md:w-1/3 bg-gradient-to-b from-[var(--moe-green)] to-[var(--moe-teal)] p-8 flex flex-col justify-center items-center text-center text-white flex-shrink-0"><i class="fa-solid fa-chart-line text-6xl mb-4"></i><h2 class="text-3xl font-bold">مؤشرات الأداء</h2></div></div>
+                    <!-- PAGE 4: Action Plan -->
+                    <div data-page-index="4" class="page absolute inset-0 flex-col md:flex-row"><div class="w-full md:w-2/3 p-6 md:p-8 flex flex-col justify-center relative"><img src="https://github.com/anwersafar/project/blob/master/Moecolored.png?raw=true" alt="شعار وزارة التعليم" class="absolute top-6 left-6 z-10" style="height: 81px; width: 107px;"><div class="space-y-4"><h2 class="text-2xl font-bold">خطة العمل التنفيذية</h2><p class="text-gray-600">تعرض هذه الخطة الأنشطة والمشاريع اللازمة لتحقيق أهداف المبادرة، مع تحديد المسؤوليات والجداول الزمنية والمخرجات المتوقعة لكل نشاط.</p><div class="w-full overflow-y-auto content-panel"><table class="w-full text-sm text-right min-w-[700px]"><thead class="bg-slate-100"><tr><th class="p-3">النشاط/المشروع</th><th class="p-3">المنفذ</th><th class="p-3">تاريخ البدء</th><th class="p-3">المدة (أيام)</th><th class="p-3">المسؤول</th><th class="p-3">النواتج</th></tr></thead><tbody><tr class="border-b"><td class="p-3 font-medium">بناء الإطار التنظيمي والتشغيلي</td><td class="p-3">فريق عمل المبادرة وخبراء استشاريون</td><td class="p-3">أكتوبر 2025</td><td class="p-3">45</td><td class="p-3">مدير المبادرة</td><td class="p-3">دليل تنظيمي وتشغيلي معتمد</td></tr><tr class="border-b bg-slate-50"><td class="p-3 font-medium">تصميم وتنفيذ برامج تدريبية للكوادر</td><td class="p-3">جهة تدريب معتمدة</td><td class="p-3">ديسمبر 2025</td><td class="p-3">90</td><td class="p-3">مسؤول التدريب</td><td class="p-3">حقائب تدريبية، 30 متدرب مؤهل</td></tr><tr class="border-b"><td class="p-3 font-medium">إطلاق حملة توعوية لأولياء الأمور</td><td class="p-3">فريق التسويق والتواصل</td><td class="p-3">يناير 2026</td><td class="p-3">120</td><td class="p-3">مسؤول التواصل</td><td class="p-3">مواد توعوية، ورش عمل</td></tr><tr class="bg-slate-50"><td class="p-3 font-medium">تطبيق ومتابعة المرحلة التجريبية</td><td class="p-3">المراكز العشرة المختارة</td><td class="p-3">فبراير 2026</td><td class="p-3">180</td><td class="p-3">مدير المبادرة ومشرفي المراكز</td><td class="p-3">تقارير أداء دورية، توصيات للتطوير</td></tr></tbody></table></div></div></div><div class="w-full md:w-1/3 bg-gradient-to-b from-[var(--moe-green)] to-[var(--moe-teal)] p-8 flex flex-col justify-center items-center text-center text-white flex-shrink-0"><i class="fa-solid fa-clipboard-list text-6xl mb-4"></i><h2 class="text-3xl font-bold">خطة العمل التنفيذية</h2></div></div>
+                    <!-- PAGE 5: Partners -->
+                    <div data-page-index="5" class="page absolute inset-0 flex-col md:flex-row"><div class="w-full md:w-2/3 p-6 md:p-8 flex flex-col justify-center overflow-y-auto content-panel relative"><img src="https://github.com/anwersafar/project/blob/master/Moecolored.png?raw=true" alt="شعار وزارة التعليم" class="absolute top-6 left-6 z-10" style="height: 81px; width: 107px;"><div class="space-y-4"><h2 class="text-2xl font-bold">الشركاء والفرص التطوعية</h2><p class="text-gray-600">نجاح المبادرة يعتمد على شبكة قوية من الشركاء وتفعيل دور المجتمع. هذا القسم يسلط الضوء على الشراكات الرئيسية وفرص التطوع المتاحة لدعم أهدافنا.</p><div class="grid grid-cols-1 lg:grid-cols-2 gap-8 pt-4"><div><h3 class="text-xl font-bold text-[var(--moe-blue)] mb-4">الشركاء الرئيسيون</h3><div class="space-y-4"><div class="p-4 bg-slate-50 rounded-lg border-l-4 border-[var(--moe-teal)]"><h4 class="font-bold">وزارة التعليم</h4><p class="text-sm mt-2">جهة إشرافية وتنظيمية لتحقيق مستهدفات الطفولة المبكرة.</p></div><div class="p-4 bg-slate-50 rounded-lg border-l-4 border-[var(--moe-teal)]"><h4 class="font-bold">وزارة الموارد البشرية</h4><p class="text-sm mt-2">جهة مانحة للتراخيص ومنظمة لقطاع مراكز الضيافة.</p></div><div class="p-4 bg-slate-50 rounded-lg border-l-4 border-[var(--moe-teal)]"><h4 class="font-bold">مستثمرو القطاع الخاص</h4><p class="text-sm mt-2">شركاء تنفيذ لتطوير أعمالهم والحصول على اعتماد رسمي.</p></div></div></div><div><h3 class="text-xl font-bold text-[var(--moe-blue)] mb-4">الفرص التطوعية</h3><div class="grid grid-cols-2 gap-4 text-center"><div class="bg-slate-50 p-4 rounded-xl border border-slate-200 flex flex-col items-center justify-center gap-2 transition-all duration-300 hover:shadow-lg hover:border-[var(--moe-teal)] hover:-translate-y-1"><div class="w-20 h-20 rounded-full bg-slate-200 flex items-center justify-center mb-2"><i class="fa-solid fa-calendar-check text-4xl text-[var(--moe-teal)]"></i></div><h5 class="font-bold">تنظيم الفعاليات</h5></div><div class="bg-slate-50 p-4 rounded-xl border border-slate-200 flex flex-col items-center justify-center gap-2 transition-all duration-300 hover:shadow-lg hover:border-[var(--moe-teal)] hover:-translate-y-1"><div class="w-20 h-20 rounded-full bg-slate-200 flex items-center justify-center mb-2"><i class="fa-solid fa-hands-helping text-4xl text-[var(--moe-teal)]"></i></div><h5 class="font-bold">دعم إداري</h5></div><div class="bg-slate-50 p-4 rounded-xl border border-slate-200 flex flex-col items-center justify-center gap-2 transition-all duration-300 hover:shadow-lg hover:border-[var(--moe-teal)] hover:-translate-y-1"><div class="w-20 h-20 rounded-full bg-slate-200 flex items-center justify-center mb-2"><i class="fa-solid fa-palette text-4xl text-[var(--moe-teal)]"></i></div><h5 class="font-bold">تصميم المواد</h5></div><div class="bg-slate-50 p-4 rounded-xl border border-slate-200 flex flex-col items-center justify-center gap-2 transition-all duration-300 hover:shadow-lg hover:border-[var(--moe-teal)] hover:-translate-y-1"><div class="w-20 h-20 rounded-full bg-slate-200 flex items-center justify-center mb-2"><i class="fa-solid fa-chart-pie text-4xl text-[var(--moe-teal)]"></i></div><h5 class="font-bold">تحليل البيانات</h5></div></div></div></div></div></div><div class="w-full md:w-1/3 bg-gradient-to-b from-[var(--moe-green)] to-[var(--moe-teal)] p-8 flex flex-col justify-center items-center text-center text-white flex-shrink-0"><i class="fa-solid fa-handshake-angle text-6xl mb-4"></i><h2 class="text-3xl font-bold">الشركاء والفرص التطوعية</h2></div></div>
+                    <!-- PAGE 6: Risk Management -->
+                    <div data-page-index="6" class="page absolute inset-0 flex-col md:flex-row"><div class="w-full md:w-2/3 p-6 md:p-8 flex flex-col justify-center overflow-hidden relative"><img src="https://github.com/anwersafar/project/blob/master/Moecolored.png?raw=true" alt="شعار وزارة التعليم" class="absolute top-6 left-6 z-10" style="height: 81px; width: 107px;"><div class="pt-24"><div class="space-y-4 flex-grow flex flex-col"><h2 class="text-2xl font-bold">خطة إدارة المخاطر</h2><p class="text-gray-600 flex-shrink-0">تم تحديد المخاطر المحتملة التي قد تواجه المبادرة وتقييمها لوضع استراتيجيات استباقية للتعامل معها. المخطط التالي يوضح المخاطر بناءً على احتمالية حدوثها وتأثيرها.</p><div id="risk-table" class="flex-grow w-full overflow-y-auto content-panel"><table class="w-full text-sm text-right min-w-[600px]"><thead class="bg-slate-100"><tr><th class="p-3">وصف الخطر</th><th class="p-3">النوع</th><th class="p-3">توصيات للمواجهة</th><th class="p-3">المسؤول</th></tr></thead><tbody><tr class="border-b"><td class="p-3 font-medium">استقطاب كوادر تعليمية غير مؤهلة</td><td class="p-3">تشغيلي</td><td class="p-3">وضع معايير توظيف صارمة، شراكات مع كليات التربية</td><td class="p-3">إدارة الموارد البشرية بالمراكز</td></tr><tr class="border-b bg-slate-50"><td class="p-3 font-medium">عدم نظامية بعض المراكز</td><td class="p-3">تنظيمي</td><td class="p-3">اشتراط الحصول على التراخيص اللازمة للمشاركة والتأكد من سلامة طلاب ومنسوبي المركز</td><td class="p-3">فريق عمل المبادرة</td></tr><tr class="border-b"><td class="p-3 font-medium">ضعف وعي أولياء الأمور بالفرق بين الروضة والمركز</td><td class="p-3">مجتمعي</td><td class="p-3">تنفيذ حملات توعوية مكثفة توضح الفروقات والمعايير</td><td class="p-3">فريق التواصل</td></tr><tr class="bg-slate-50"><td class="p-3 font-medium">ازدواجية الإشراف على المراكز</td><td class="p-3">تنظيمي</td><td class="p-3">تشكيل لجنة تنسيقية مشتركة بين الجهات المعنية</td><td class="p-3">إدارة المبادرة</td></tr></tbody></table></div><div id="risk-chart-container" class="hidden flex-grow items-center justify-center w-full"><div class="chart-container"><div id="riskChart"></div></div></div><div class="text-center mt-4 flex-shrink-0"><button onclick="toggleView('risk', this)" class="bg-[var(--moe-blue)] text-white px-4 py-2 rounded-lg hover:bg-[var(--moe-dark-blue)] transition"><i class="fa-solid fa-chart-pie mr-2"></i> <span>عرض الرسم البياني</span></button></div></div></div></div><div class="w-full md:w-1/3 bg-gradient-to-b from-[var(--moe-green)] to-[var(--moe-teal)] p-8 flex flex-col justify-center items-center text-center text-white flex-shrink-0"><i class="fa-solid fa-triangle-exclamation text-6xl mb-4"></i><h2 class="text-3xl font-bold">خطة إدارة المخاطر</h2></div></div>
+                    <!-- PAGE 7: Budget -->
+                    <div data-page-index="7" class="page absolute inset-0 flex-col md:flex-row"><div class="w-full md:w-2/3 p-6 md:p-8 flex flex-col justify-center overflow-hidden relative"><img src="https://github.com/anwersafar/project/blob/master/Moecolored.png?raw=true" alt="شعار وزارة التعليم" class="absolute top-6 left-6 z-10" style="height: 81px; width: 107px;"><div class="pt-24"><div class="space-y-4 flex-grow flex flex-col"><h2 class="text-2xl font-bold">الميزانية المالية التقديرية (المرحلة الأولى)</h2><p class="text-gray-600 flex-shrink-0">توضح الميزانية التكاليف المتوقعة للمرحلة التجريبية للمبادرة والتي تستهدف 10 مراكز. تم توزيع البنود لتغطية كافة الجوانب التشغيلية والتطويرية.</p><div id="budget-table" class="flex-grow w-full overflow-y-auto content-panel"><table class="w-full text-sm text-right min-w-[500px]"><thead class="bg-slate-100"><tr><th class="p-3">البند</th><th class="p-3">الإيضاح</th><th class="p-3">السعر الإجمالي (ريال)</th></tr></thead><tbody><tr class="border-b"><td class="p-3 font-medium">استشارات وتطوير</td><td class="p-3">تطوير الإطار التنظيمي والمناهج</td><td class="p-3">75,000</td></tr><tr class="border-b bg-slate-50"><td class="p-3 font-medium">تدريب وتأهيل</td><td class="p-3">برامج تدريبية لـ 30 كادر</td><td class="p-3">90,000</td></tr><tr class="border-b"><td class="p-3 font-medium">تسويق وتوعية</td><td class="p-3">حملات إعلانية وورش عمل</td><td class="p-3">35,000</td></tr><tr class="border-b bg-slate-50"><td class="p-3 font-medium">نفقات تشغيلية</td><td class="p-3">مصاريف إدارية ومتابعة</td><td class="p-3">50,000</td></tr><tr class="bg-[var(--moe-dark-blue)] text-white font-bold"><td class="p-3" colspan="2">الإجمالي</td><td class="p-3">250,000</td></tr></tbody></table></div><div id="budget-chart-container" class="hidden flex-grow items-center justify-center w-full"><div class="chart-container"><div id="budgetChart"></div></div></div><div class="text-center mt-4 flex-shrink-0"><button onclick="toggleView('budget', this)" class="bg-[var(--moe-blue)] text-white px-4 py-2 rounded-lg hover:bg-[var(--moe-dark-blue)] transition"><i class="fa-solid fa-chart-pie mr-2"></i> <span>عرض الرسم البياني</span></button></div></div></div></div><div class="w-full md:w-1/3 bg-gradient-to-b from-[var(--moe-green)] to-[var(--moe-teal)] p-8 flex flex-col justify-center items-center text-center text-white flex-shrink-0"><i class="fa-solid fa-coins text-6xl mb-4"></i><h2 class="text-3xl font-bold">الميزانية التقديرية</h2></div></div>
+                    <!-- PAGE 8: Thank You -->
+                    <div data-page-index="8" class="page absolute inset-0 flex-col bg-[var(--moe-dark-blue)] text-white p-8 justify-center items-center text-center">
+                        <img src="https://github.com/anwersafar/project/blob/master/Moecolored.png?raw=true" alt="شعار وزارة التعليم" class="absolute top-6 left-6" style="height: 106px; width: 139px;">
+                        <h2 class="text-8xl font-extrabold">شكراً لكم</h2>
+                    </div>
+                </div>
+            </div>
+             <!-- Navigation Controls -->
+            <div id="nav-controls" class="absolute bottom-5 left-1/2 -translate-x-1/2 z-20 flex justify-between items-center gap-4 hidden">
+                <div id="prev-btn" class="nav-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+                <div id="home-btn" class="home-btn"><i class="fa-solid fa-bars"></i></div>
+                <div id="next-btn" class="nav-arrow"><i class="fa-solid fa-arrow-left"></i></div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const totalPages = 8;
+        let currentPageIndex = 0;
+
+        const indexPage = document.getElementById('index-page');
+        const contentWrapper = document.getElementById('content-wrapper');
+        const pagesContainer = document.getElementById('pages-container');
+        const navControls = document.getElementById('nav-controls');
+
+        const nextBtn = document.getElementById('next-btn');
+        const prevBtn = document.getElementById('prev-btn');
+        const homeBtn = document.getElementById('home-btn');
+
+        let riskChart, budgetChart;
+
+        function updateNavButtons() {
+            prevBtn.classList.toggle('disabled', currentPageIndex <= 1);
+            nextBtn.classList.toggle('disabled', currentPageIndex >= totalPages);
+        }
+
+        function showPage(pageIndex) {
+            const contentPages = pagesContainer.querySelectorAll('.page');
+            contentPages.forEach(p => p.classList.remove('active'));
+            const targetPage = pagesContainer.querySelector(`[data-page-index="${pageIndex}"]`);
+            if (targetPage) {
+                targetPage.classList.add('active');
+                currentPageIndex = pageIndex;
+            }
+            updateNavButtons();
+        }
+
+        function goToPage(pageIndex) {
+            if (pageIndex === 0) {
+                indexPage.classList.add('active');
+                contentWrapper.classList.remove('active');
+                navControls.classList.add('hidden');
+                currentPageIndex = 0;
+            } else {
+                indexPage.classList.remove('active');
+                contentWrapper.classList.add('active');
+                navControls.classList.remove('hidden');
+                showPage(pageIndex);
+            }
+        }
+
+        nextBtn.addEventListener('click', () => !nextBtn.classList.contains('disabled') && goToPage(currentPageIndex + 1));
+        prevBtn.addEventListener('click', () => !prevBtn.classList.contains('disabled') && goToPage(currentPageIndex - 1));
+        homeBtn.addEventListener('click', () => goToPage(0));
+
+        function toggleView(prefix, btn) {
+            const table = document.getElementById(prefix + '-table');
+            const chartContainer = document.getElementById(prefix + '-chart-container');
+            const isChartHidden = chartContainer.classList.toggle('hidden');
+            table.classList.toggle('hidden', !isChartHidden);
+
+            if(!isChartHidden) {
+                chartContainer.classList.add('flex');
+            } else {
+                chartContainer.classList.remove('flex');
+            }
+
+            const btnSpan = btn.querySelector('span');
+            btnSpan.textContent = isChartHidden ? 'عرض الرسم البياني' : 'عرض الجدول';
+        }
+
+        function createRiskChart() {
+            if (riskChart) return;
+            const options = {
+                series: [
+                {
+                    name: 'كوادر غير مؤهلة',
+                    data: [[4, 4, 15]]
+                },
+                {
+                    name: 'عدم نظامية المراكز',
+                    data: [[3, 5, 15]]
+                },
+                {
+                    name: 'ضعف وعي أولياء الأمور',
+                    data: [[4, 3, 15]]
+                },
+                {
+                    name: 'ازدواجية الإشراف',
+                    data: [[2, 4, 15]]
+                },
+            ],
+                chart: {
+                height: '100%',
+                type: 'scatter',
+                zoom: { enabled: false },
+                toolbar: { show: false },
+                fontFamily: 'Tajawal, sans-serif'
+            },
+            xaxis: {
+                title: { text: 'الاحتمالية (1-5)'},
+                min: 0,
+                max: 5.5,
+                tickAmount: 5
+            },
+            yaxis: {
+                title: { text: 'الأثر (1-5)'},
+                min: 0,
+                max: 5.5,
+                tickAmount: 5
+            },
+            legend: {
+                position: 'bottom'
+            },
+            tooltip: {
+                y: {
+                    formatter: (val) => `الأثر: ${val}`,
+                },
+                 x: {
+                    formatter: (val) => `الاحتمالية: ${val}`
+                }
+            },
+            };
+            riskChart = new ApexCharts(document.querySelector("#riskChart"), options);
+            riskChart.render();
+        }
+
+        function createBudgetChart() {
+            if (budgetChart) return;
+            const options = {
+                series: [75000, 90000, 35000, 50000],
+                labels: ['استشارات وتطوير', 'تدريب وتأهيل', 'تسويق وتوعية', 'نفقات تشغيلية'],
+                chart: {
+                    type: 'donut',
+                    height: '100%',
+                    fontFamily: 'Tajawal, sans-serif'
+                },
+                plotOptions: {
+                    pie: {
+                        donut: {
+                            labels: {
+                                show: true,
+                                total: {
+                                    show: true,
+                                    label: 'الإجمالي',
+                                    formatter: function (w) {
+                                        return '250,000'
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                colors: ['#BF8B5E', '#D4A373', '#EAC696', '#F7E6C4'],
+                legend: {
+                    position: 'bottom'
+                },
+                responsive: [{
+                    breakpoint: 480,
+                    options: {
+                        chart: {
+                            width: 200
+                        },
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }]
+            };
+            budgetChart = new ApexCharts(document.querySelector("#budgetChart"), options);
+            budgetChart.render();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            createRiskChart();
+            createBudgetChart();
+            goToPage(0);
+        });
+    </script>
+</body>
+</html>
